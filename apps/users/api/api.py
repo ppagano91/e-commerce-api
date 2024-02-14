@@ -18,3 +18,25 @@ def user_api_view(request):
             user_serializer.save()
             return Response(user_serializer.data)
         return Response(user_serializer.errors)
+    
+@api_view(['GET', 'PUT', 'DELETE'])
+def user_detail_api_view(request, pk=None):
+    user = User.objects.filter(id=pk).first()
+    if user:
+        if request.method == 'GET':            
+            user_serializer = UserSerializer(user)
+            return Response(user_serializer.data)
+        
+        if request.method == 'PUT':            
+            user_serializer = UserSerializer(user, data=request.data)
+            if user_serializer.is_valid():
+                user_serializer.save()
+                return Response(user_serializer.data)
+            return Response(user_serializer.errors)
+        
+        if request.method == 'DELETE':
+            username = user.username
+            user.delete()
+            return Response({'message': f'User {username} deleted'}, status=200)
+        
+    return Response({'message': 'User not found'}, status=400)
