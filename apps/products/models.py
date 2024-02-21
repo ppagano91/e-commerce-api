@@ -23,8 +23,8 @@ class MeasureUnit(BaseModel):
         return self.description
     
 class Category(BaseModel):
-    description = models.TextField('Descripción', max_length=100, blank=False, null=False, unique=True)
-    measure_unit = models.ForeignKey(MeasureUnit, on_delete=models.CASCADE, verbose_name='Unidad de Medida')
+    description = models.TextField('Descripción', max_length=100, blank=False, null=False, unique=True)    
+    historical = HistoricalRecords()
 
     @property
     def _history_user(self):
@@ -66,7 +66,9 @@ class Indicator(BaseModel):
 class Product(BaseModel):
     name = models.CharField('Nombre de Producto', max_length=100, blank=False, null=False, unique=True)
     description = models.TextField('Descripción de Producto', max_length=200, blank=False, null=False)
-    image = models.ImageField('Imagen del Producto', upload_to='products/', blank=True, null=True)    
+    image = models.ImageField('Imagen del Producto', upload_to='products/', blank=True, null=True)
+    measure_unit = models.ForeignKey(MeasureUnit, on_delete=models.CASCADE, verbose_name='Unidad de Medida', null=True)
+    category_product = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Categoría de Producto', null=True)
     historical = HistoricalRecords()
 
     @property
