@@ -4,13 +4,9 @@ from rest_framework.response import Response
 from apps.base.api import GeneralListApiView
 from apps.products.api.serializers.product_serializers import ProductSerializer
 
-
-class ProductListAPIView(GeneralListApiView):
+class ProductListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
-
-
-class ProductCreateAPIView(generics.CreateAPIView):
-    serializer_class = ProductSerializer
+    queryset = ProductSerializer.Meta.model.objects.filter(state=True)
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
