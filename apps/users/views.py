@@ -4,6 +4,7 @@ from django.contrib.sessions.models import Session
 
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 
@@ -43,11 +44,36 @@ class Login(ObtainAuthToken):
                     return Response({'token': token.key, 'user': user_serializer.data, 'message': 'Token created successfuly!'}, status=status.HTTP_201_CREATED)
                     '''
                     token.delete()
-                    return Response({"error": "This user already has an associated token"}, status=status.HTTP_409_CONFLICT)
-
-                return Response({'token': token.key, 'user': user_serializer.data, 'message': 'Successful login!'}, status=status.HTTP_200_OK)
+                    return Response({"error": "This user already has an associated token"}, status=status.HTTP_409_CONFLICT)                
             else:
                 return Response({'error': 'This user is not active'}, status=status.HTTP_401_UNAUTHORIZED)
             
         else:
             return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Logout(APIView):
+    
+    def get(self, request):
+        try:
+            token = request.GET.get('token')
+            token = Token.objects.filter(key=token).first()
+            if token:
+                user = token.user
+                all_sessions = Session.objects.filter(expire_date__gte=datetime.now())
+                session_message = None
+                if all_sessions.exists():
+                    for session in all_sessions:
+                        session_data = session.get_decoded()
+                        if user.id == int(session_data.get('_auth_user_id')):
+                            session.delete()
+                            session_message = "User sessions deleted"
+
+                token.delete()
+                token_message = "Token deleted"
+
+                return Response({"token_message": token_message, "session_message": session_message}, status=status.HTTP_200_OK)
+            
+            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({"error": "Token not found in the request"}, status=status.HTTP_404_NOT_FOUND)
