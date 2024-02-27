@@ -49,7 +49,8 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'simple_history',
-    'drf_yasg'
+    'drf_yasg',
+    'corsheaders',
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -58,9 +59,12 @@ SWAGGER_SETTINGS = {
     'DOC_EXPANSION': 'none'
     }
 
+TOKEN_EXPIRED_AFTER_SECONDS = 900
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -122,6 +126,14 @@ USE_I18N = True
 USE_TZ = True
 
 AUTH_USER_MODEL = 'users.User'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000"
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000"
+]
 
 
 # Static files (CSS, JavaScript, Images)
