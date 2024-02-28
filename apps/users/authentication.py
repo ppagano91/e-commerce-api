@@ -29,8 +29,8 @@ class ExpiringTokenAuthentication(TokenAuthentication):
         user = None
         try:
             token = model.objects.select_related("user").get(key=key)
-            user = token.user
             token = self.token_expire_handler(token)
+            user = token.user
             
         except model.DoesNotExist:
             message="Invalid token"

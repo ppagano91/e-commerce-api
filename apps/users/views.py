@@ -12,7 +12,7 @@ from apps.users.authentication_mixins import Authentication
 from apps.users.api.serializers import UserTokenSerializer
 
 class UserToken(Authentication, APIView):
-    def get(self, request):        
+    def get(self, request):
         try:
             username = UserTokenSerializer.Meta.model.objects.filter(username=self.user.username).first()
             user_token, _ = Token.objects.get_or_create(user = username)
@@ -21,7 +21,7 @@ class UserToken(Authentication, APIView):
                 user = user_token.user
                 token = user_token.key
                 user_serializer = UserTokenSerializer(user)
-                return Response({"token": token, "user":user_serializer}, status=status.HTTP_200_OK)
+                return Response({"token": token}, status=status.HTTP_200_OK)
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({"error": "Token not found in the request"}, status=status.HTTP_404_NOT_FOUND)

@@ -1,19 +1,19 @@
 from rest_framework.authentication import get_authorization_header
 
 from apps.users.authentication import ExpiringTokenAuthentication
-from rest_framework import exceptions, status
+from rest_framework import exceptions, status, authentication
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
 
-class Authentication(object):
+class Authentication(authentication.BaseAuthentication):
     user = None
 
     def get_user(self, request):
         token = get_authorization_header(request).split()
         if token:
             try:
-                token = token[1].decode()                
+                token = token[1].decode()
             except:
                 msg = 'Invalid token header. Token string should not contain spaces.'
                 return None
@@ -27,16 +27,23 @@ class Authentication(object):
                 return user
         return None
     
+    def authenticate(self, request):
+        self.get_user(request)
+        if self.user is None:            
+            raise exceptions.AuthenticationFailed('Credentials have not been sent')
+        
+        return (self.get_user(request), None)
+    
 
-    def dispatch(self, request, *args, **kwargs):
-        user = self.get_user(request)
+    # def dispatch(self, request, *args, **kwargs):
+    #     user = self.get_user(request)
 
-        if user is not None:
-                return super().dispatch(request, *args, **kwargs)
+    #     if user is not None:
+    #             return super().dispatch(request, *args, **kwargs)
 
-        response = Response({'error': 'Credentials have not been sent','expired': self.user_token_expired}, status=status.HTTP_400_BAD_REQUEST)
-        response.accepted_renderer = JSONRenderer()
-        response.accepted_media_type = 'application/json'
-        response.renderer_context = {}
+    #     response = Response({'error': 'Credentials have not been sent'}, status=status.HTTP_400_BAD_REQUEST)
+    #     response.accepted_renderer = JSONRenderer()
+    #     response.accepted_media_type = 'application/json'
+    #     response.renderer_context = {}
 
-        return response
+    #     return response
