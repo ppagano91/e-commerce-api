@@ -1,12 +1,14 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 from apps.products.api.serializers.product_serializers import ProductSerializer
 
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
+    # El atributo parser_classes está por defecto configurado
+    parser_classes = (JSONParser, FormParser, MultiPartParser)
     # permission_classes = [IsAuthenticated]    # Para que solo los usuarios autenticados puedan acceder a los productos
     
     def get_queryset(self, pk=None):
