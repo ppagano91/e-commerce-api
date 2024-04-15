@@ -1,12 +1,11 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from apps.users.models import User
-from apps.users.api.serializers import UserSerializer, UserListSerializer, UserUpdateSerializer
+from apps.users.api.serializers import UserSerializer, UserListSerializer, UserUpdateSerializer, PasswordSerializer
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import action
 # Difference between GenericViewSet and ModelViewSet:
 # 
 # GenericViewSet: It is used when you don't need to perform CRUD operations on a model. It is used when you need to perform custom operations on a model.
@@ -24,6 +23,25 @@ class UserViewSet(viewsets.GenericViewSet):
         if self.queryset is None:
             self.queryset = self.model.objects.filter(is_active=True).values('id','name','username','email', 'password')
         return self.queryset
+    
+    @action(detail=True, methods=["POST"], url_path="change_password")
+    def set_password(self, request, pk=None):
+        user = self.get_object(pk)
+        password_serializer = PasswordSerializer(data=request.data)
+        if password_serializer.is_valid():
+            user.set_password(password_serializer.validated_data["password"])
+            user.save()
+            return Response({
+                "message":"Clave actualizada correctamente"
+            })
+        
+        return Response({
+            "message": "Error al actualizar la clave",
+            "errors":password_serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
     
     def list(self, request):        
         users = self.get_queryset()
