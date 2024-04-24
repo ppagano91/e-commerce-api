@@ -44,6 +44,7 @@ LOCAL_APPS = [
     'apps.base',
     'apps.users',
     'apps.products',
+    'apps.expense_manager',
 ]
 
 THIRD_PARTY_APPS = [
@@ -142,7 +143,8 @@ USE_TZ = True
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:8080"
 ]
 
 CORS_ORIGIN_WHITELIST = [
