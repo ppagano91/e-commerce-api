@@ -4,8 +4,8 @@ from apps.products.api.views.general_views import MeasureUnitViewSet, CategoryVi
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='products')
-router.register(r'measure_unit', MeasureUnitViewSet, basename='measure-unit')
-router.register(r'category_product', CategoryViewSet, basename='category-product')
+router.register(r'measure-unit', MeasureUnitViewSet, basename='measure_unit')
+router.register(r'category-product', CategoryViewSet, basename='category_product')
 router.register(r'indicator', IndicatorViewSet, basename='indicator')
 
 urlpatterns = router.urls

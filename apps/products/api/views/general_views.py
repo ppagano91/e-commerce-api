@@ -14,7 +14,13 @@ class MeasureUnitViewSet(viewsets.GenericViewSet):
     def get_queryset(self):
         return self.get_serializer().Meta.model.objects.filter(state=True)
     
-    def list(self):
+    def get_authenticate_header(self, request):
+        return self.get_serializer().Meta.model.objects.filter(state=True)
+    
+    def get_object(self):
+        return self.get_serializer().Meta.model.objects.filter(id=self.kwargs["pk"], state=True)
+    
+    def list(self, request):
         """
         A simple ViewSet for viewing and editing Measure Unit instances.
 
@@ -25,11 +31,14 @@ class MeasureUnitViewSet(viewsets.GenericViewSet):
         return Response(serializer.data)
 
     
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.GenericViewSet):
     """    
     A simple ViewSet for viewing and editing Category instances.
     """
     serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return self.get_serializer().Meta.model.objects.filter(state=True)
     
     def get_authenticate_header(self, request):
         return self.get_serializer().Meta.model.objects.filter(state=True)
