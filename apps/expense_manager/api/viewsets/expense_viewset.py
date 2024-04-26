@@ -10,7 +10,7 @@ from apps.expense_manager.api.serializers.expense_serializer import *
 class ExpenseViewSet(viewsets.GenericViewSet):
     serializer_class = ExpenseSerializer
 
-    @action(methods=["get"], detail=False)  # url_path="search_supplier"
+    @action(methods=["GET"], detail=False)  # url_path="search_supplier"
     def search_supplier(self, request):
         ruc_or_business_name = request.query_params.get("ruc_or_business_name","")
 
@@ -24,3 +24,17 @@ class ExpenseViewSet(viewsets.GenericViewSet):
             return Response(supplier_serializer.data, status=status.HTTP_200_OK)
         
         return Response({"mensaje":"No se ha encontrado un proveedor"},status=status.HTTP_400_BAD_REQUEST)
+    
+
+    @action(methods=["POST"],detail=False)
+    def new_supplier(self, request):
+        data_supplier = request.data
+        data_supplier = SupplierRegisterSerializer(data=data_supplier)
+
+        if data_supplier.is_valid():
+            data_supplier = data_supplier.save()
+
+            return Response({"mensaje":"Proveedor registrado correctametne", "supplier":data_supplier}, status=status.HTTP_201_CREATED)
+        
+        return Response({"error":data_supplier.errors}, status=status.HTTP_400_BAD_REQUEST)
+
