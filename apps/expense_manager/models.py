@@ -128,17 +128,14 @@ class ExpenseCategory(BaseModel):
 class Expense(BaseModel):
     date = models.DateField(
         'Fecha de emisión de factura', auto_now=False, auto_now_add=False)    
+    date = models.DateField('Fecha de emisión de factura', auto_now=False, auto_now_add=False)    
     quantity = models.DecimalField('Cantidad', max_digits=10, decimal_places=2)
-    unit_price = models.DecimalField(
-        'Precio Unitario', max_digits=10, decimal_places=2, default=0)
-    voucher_number = models.CharField(
-        'Número de comprobante', max_length=50)
-    total = models.DecimalField(
-        'Total', max_digits=10, decimal_places=2, default=0)
+    unit_price = models.DecimalField('Precio Unitario', max_digits=10, decimal_places=2, default=0)
+    voucher_number = models.CharField('Número de comprobante', max_length=50)
+    total = models.DecimalField('Total', max_digits=10, decimal_places=2, default=0)
     voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    provider = models.ForeignKey(
-        Provider, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     historical = HistoricalRecords()

@@ -55,6 +55,7 @@ urlpatterns = [
     path('logout/', Logout.as_view(), name='logout'),
     path('users/', include('apps.users.api.routers')),
     path('products/', include('apps.products.api.routers')),
+    path('expense/', include('apps.expense_manager.api.routers')),
 ]
 
 urlpatterns += [
