@@ -156,19 +156,19 @@ class Expense(BaseModel):
     def __str__(self):
         return self.product
 
-    def save(self, *args, **kwargs):
-        try:
-            product = Product.objects.get(id=self.concepto.id)
-            product.quantity += self.quantity
-            product.save()
-        except ObjectDoesNotExist as e:
-            print("Producto No Registrado!")
+    # def save(self, *args, **kwargs):
+    #     try:
+    #         product = Product.objects.get(id=self.concepto.id)
+    #         product.quantity += self.quantity
+    #         product.save()
+    #     except ObjectDoesNotExist as e:
+    #         print("Producto No Registrado!")
 
-        if self.unit_price == 0:
-            self.unit_price = (self.quantity / self.cantidad)
-        if self.quantity == 0:
-            self.quantity = (self.unit_price * self.cantidad)
-        super(Expense, self).save(*args, **kwargs)
+    #     if self.unit_price == 0:
+    #         self.unit_price = (self.quantity / self.cantidad)
+    #     if self.quantity == 0:
+    #         self.quantity = (self.unit_price * self.cantidad)
+    #     super(Expense, self).save(*args, **kwargs)
 
 
 class Merma(BaseModel):

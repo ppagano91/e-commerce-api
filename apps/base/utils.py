@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def validate_files(request, field, update=False):
     """
     :params
@@ -15,3 +17,10 @@ def validate_files(request, field, update=False):
             request.__setitem__(field, None)
 
     return request
+
+
+def format_date(date):
+    date = datetime.strptime(date, "%d/%m/%Y")
+    date = f"{date.year}-{date.month}-{date.day}"
+
+    return date
